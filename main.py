@@ -1,15 +1,14 @@
 import streamlit as st
 import matplotlib.pyplot as plt
-import numpy as np
 
-# 1. 웹 앱 페이지 기본 설정 (코지 & 트렌디한 타이틀)
+# 1. 페이지 설정
 st.set_page_config(
-    page_title="말랑말랑 소수 놀이터 🍩",
-    page_icon="🍩",
+    page_title="단단한 숫자 보석, 소수 놀이터 💎",
+    page_icon="💎",
     layout="centered"
 )
 
-# 커스텀 CSS로 부드럽고 따뜻한 폰트와 배경 감성 한 스푼 추가 (에러 수정 완료!)
+# 코지 & 트렌디 감성 CSS 스타일링
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap');
@@ -17,7 +16,7 @@ st.markdown("""
         font-family: 'Gamja+Flower', cursive !important;
     }
     .main-title {
-        color: #FF8A8A;
+        color: #4A90E2;
         font-size: 3rem !important;
         text-align: center;
         margin-bottom: 5px;
@@ -29,82 +28,87 @@ st.markdown("""
         margin-bottom: 30px;
     }
     .bubble-box {
-        background-color: #FFF5E4;
+        background-color: #E8F4F8;
         padding: 20px;
         border-radius: 15px;
-        border: 2px dashed #FFC4C4;
+        border: 2px dashed #90CAF9;
         text-align: center;
         font-size: 1.4rem;
-        color: #4A4A4A;
+        color: #333333;
         margin-bottom: 20px;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# 2. 상단 타이틀 영역
-st.markdown('<h1 class="main-title">🍩 말랑말랑 소수 놀이터</h1>', unsafe_allow_html=True)
-st.markdown('<p class="sub-title">도넛을 쪼개며 재미있는 소수 나라로 떠나볼까요?</p>', unsafe_allow_html=True)
+# 2. 상단 타이틀
+st.markdown('<h1 class="main-title">💎 반짝반짝 소수 놀이터</h1>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">더 이상 쪼갤 수 없는 특별한 숫자 보석을 찾아라!</p>', unsafe_allow_html=True)
 
-# 3. 아이들을 위한 친근한 설명창
+# 3. 아이 맞춤형 개념 설명
 st.markdown("""
     <div class="bubble-box">
-        🎈 <b>"소수"</b>는 한 개보다 작은 조각을 말해요!<br>
-        아래의 동그란 조절 버튼을 좌우로 움직여서 도넛을 나누어 보세요.
+        🎈 <b>"소수"</b>는 다른 숫자로 나누어지지 않는 아주 단단한 숫자에요!<br>
+        아래 조절 버튼을 움직이며 어떤 숫자가 <b>반짝이는 보석(소수)</b>인지 찾아보세요.
     </div>
 """, unsafe_allow_html=True)
 
-# 4. 직관적인 조작을 위한 슬라이더 (0.0부터 1.0까지 0.1씩 변동)
-decimal_value = st.slider(
-    "👉 도넛을 얼마나 먹을까요? 조절해 보세요!",
-    min_value=0.0,
-    max_value=1.0,
-    value=0.5,
-    step=0.1,
-    format="%.1f"
+# 4. 직관적인 숫자 슬라이더 (유치원 아이들이 다루기 좋은 2~20 범위)
+number = st.slider(
+    "👉 숫자를 바꿔보며 보석을 찾아보세요!",
+    min_value=2,
+    max_value=20,
+    value=2,
+    step=1
 )
 
-# 5. 시각화를 위한 원형 차트 (도넛 모양) 그리기
-colors = ['#FF8A8A', '#F9F1F0'] 
+# 5. 소수 판별 함수
+def is_prime(n):
+    if n < 2:
+        return False
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
 
-fig, ax = plt.subplots(figsize=(6, 6))
-sizes = [decimal_value, 1.0 - decimal_value]
+# 약수 구하기 (아이들에게 시각적으로 보여주기 위함)
+divisors = [i for i in range(1, number + 1) if number % i == 0]
+is_number_prime = is_prime(number)
 
-# 값이 0이거나 1일 때의 예외 처리로 깔끔한 원 그리기
-if decimal_value == 0:
-    wedges, texts = ax.pie([1], colors=['#F9F1F0'], startangle=90, counterclock=False)
-elif decimal_value == 1.0:
-    wedges, texts = ax.pie([1], colors=['#FF8A8A'], startangle=90, counterclock=False)
-else:
-    wedges, texts = ax.pie(sizes, colors=colors, startangle=90, counterclock=False, 
-                           wedgeprops=dict(width=0.4, edgecolor='white', linewidth=2))
+# 6. 동그라미 조각으로 시각화 (Matplotlib)
+# 예: 6이면 2개씩 3줄, 혹은 약수의 형태로 묶이는 모습을 보여주면 좋지만,
+# 유치원생에게는 '보석 개수'만큼 정렬되어 나오는 것이 직관적입니다.
+fig, ax = plt.subplots(figsize=(6, 2))
+ax.axis('off')
 
-ax.axis('equal')  
-fig.patch.set_facecolor('#FFFFFF') 
+# 소수면 예쁜 하늘색 보석, 합성수면 부드러운 핑크색 조각
+dot_color = '#4A90E2' if is_number_prime else '#FF8A8A'
+marker_style = 'D' if is_number_prime else 'o' # 소수는 다이아몬드(D), 합성수는 동그라미(o)
 
-# 스트림릿에 도넛 그래프 보여주기
+# 가로로 숫자만큼 기호 그리기
+for i in range(number):
+    ax.scatter(i, 0, color=dot_color, s=500, marker=marker_style, edgecolor='white', linewidth=2)
+
+ax.set_xlim(-0.5, max(number - 0.5, 4.5))
+ax.set_ylim(-0.5, 0.5)
 st.pyplot(fig)
 
-# 6. 현재 상태를 숫자가 아닌 감성적인 텍스트와 이모지로 표현
+# 7. 결과 피드백 & 연출
 st.write("---")
-col1, col2 = st.columns(2)
 
-with col1:
-    st.metric(label="✨ 지금 내 도넛 크기는?", value=f"{decimal_value}")
-
-with col2:
-    if decimal_value == 0.0:
-        message = "도넛이 아직 접시에 없어요! 🍽️"
-    elif decimal_value <= 0.3:
-        message = "아기 새만큼 조금 한 조각! 🐣"
-    elif decimal_value <= 0.6:
-        message = "사이좋게 절반만큼 가졌어요! 🤝"
-    elif decimal_value <= 0.9:
-        message = "우와, 정말 커다란 조각이에요! 🦖"
-    else:
-        message = "와 함냐함냐! 도넛 한 개 통째로 다 내꺼! 🍩🎉"
-        
-    st.markdown(f"<div style='font-size: 1.5rem; padding-top: 15px; color: #6C5B7B; text-align: center;'><b>{message}</b></div>", unsafe_allow_html=True)
-
-# 축하 효과 (1.0 완전한 한 개가 되었을 때 풍선 팡팡!)
-if decimal_value == 1.0:
-    st.balloons()
+if is_number_prime:
+    # 소수일 때 (보석 팡팡!)
+    st.markdown(f"""
+        <div style='text-align: center;'>
+            <h2 style='color: #4A90E2;'>🎉 찾았다! {number}번은 단단한 보석 소수!</h2>
+            <p style='font-size: 1.3rem; color: #555;'>1과 {number} 자기 자신으로만 나누어져요!</p>
+        </div>
+    """, unsafe_allow_html=True)
+    st.balloons() # 풍선 효과
+else:
+    # 소수가 아닐 때 (나누어지는 수)
+    st.markdown(f"""
+        <div style='text-align: center;'>
+            <h2 style='color: #FF8A8A;'>🍪 {number}번은 쪼개지는 부드러운 수!</h2>
+            <p style='font-size: 1.3rem; color: #555;'>이 숫자는 <b>{', '.join(map(str, divisors[1:-1]))}</b> 등으로 이쁘게 나누어떨어져요.</p>
+        </div>
+    """, unsafe_allow_html=True)
