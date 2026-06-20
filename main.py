@@ -57,9 +57,14 @@ numbers_to_show = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 if 'chosen_num' not in st.session_state:
     st.session_state.chosen_num = 2
 
+# 들여쓰기와 줄바꿈을 한 줄로 완전히 붙여 안전하게 수정했습니다.
 for idx, num in enumerate(numbers_to_show):
     with cols[idx % 6]:
-        # 현재 선택된 숫자는 이모지를 붙여서 표시
         label = f"⭐ {num}" if st.session_state.chosen_num == num else f"{num}"
-        # 에러 해결: 코드가 도중에 끊기지 않도록 깔끔하게 한 줄로 처리했습니다.
-        if st.
+        if st.button(label, key=f"btn_{num}", use_container_width=True):
+            st.session_state.chosen_num = num
+
+current_num = st.session_state.chosen_num
+
+st.write("---")
+st.markdown(f"<h3 style='text-align
