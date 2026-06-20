@@ -9,7 +9,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# 커스텀 CSS로 부드럽고 따뜻한 폰트와 배경 감성 한 스푼 추가
+# 커스텀 CSS로 부드럽고 따뜻한 폰트와 배경 감성 한 스푼 추가 (에러 수정 완료!)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap');
@@ -39,7 +39,7 @@ st.markdown("""
         margin-bottom: 20px;
     }
     </style>
-""", unsafe_index=True)
+""", unsafe_allow_html=True)
 
 # 2. 상단 타이틀 영역
 st.markdown('<h1 class="main-title">🍩 말랑말랑 소수 놀이터</h1>', unsafe_allow_html=True)
@@ -54,7 +54,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 4. 직관적인 조작을 위한 슬라이더 (0.0부터 1.0까지 0.1씩 변동)
-# 아이들이 쉽게 누르고 밀 수 있도록 큰 단위를 제공합니다.
 decimal_value = st.slider(
     "👉 도넛을 얼마나 먹을까요? 조절해 보세요!",
     min_value=0.0,
@@ -65,12 +64,9 @@ decimal_value = st.slider(
 )
 
 # 5. 시각화를 위한 원형 차트 (도넛 모양) 그리기
-# 코지한 컬러 팰럿 정의 (베이지, 연홍색)
 colors = ['#FF8A8A', '#F9F1F0'] 
 
 fig, ax = plt.subplots(figsize=(6, 6))
-
-# 데이터 설정 (현재 소수 값 vs 나머지 값)
 sizes = [decimal_value, 1.0 - decimal_value]
 
 # 값이 0이거나 1일 때의 예외 처리로 깔끔한 원 그리기
@@ -82,12 +78,8 @@ else:
     wedges, texts = ax.pie(sizes, colors=colors, startangle=90, counterclock=False, 
                            wedgeprops=dict(width=0.4, edgecolor='white', linewidth=2))
 
-# 가운데 구멍을 뚫어 완벽한 도넛 모양 만들기 (시각적 직관성)
-if decimal_value != 0 and decimal_value != 1.0:
-    pass # wedgeprops width로 이미 도넛 모양 구현됨
-
 ax.axis('equal')  
-fig.patch.set_facecolor('#FFFFFF') # 배경을 하얗고 깔끔하게
+fig.patch.set_facecolor('#FFFFFF') 
 
 # 스트림릿에 도넛 그래프 보여주기
 st.pyplot(fig)
@@ -100,7 +92,6 @@ with col1:
     st.metric(label="✨ 지금 내 도넛 크기는?", value=f"{decimal_value}")
 
 with col2:
-    # 값에 따른 아이 맞춤형 칭찬 한마디
     if decimal_value == 0.0:
         message = "도넛이 아직 접시에 없어요! 🍽️"
     elif decimal_value <= 0.3:
@@ -114,6 +105,6 @@ with col2:
         
     st.markdown(f"<div style='font-size: 1.5rem; padding-top: 15px; color: #6C5B7B; text-align: center;'><b>{message}</b></div>", unsafe_allow_html=True)
 
-# 축하 효과 (1.0 완전한 한 개가 되었을 때 팡파르!)
+# 축하 효과 (1.0 완전한 한 개가 되었을 때 풍선 팡팡!)
 if decimal_value == 1.0:
     st.balloons()
