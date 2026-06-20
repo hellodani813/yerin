@@ -48,12 +48,12 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# 2. 버튼 클릭으로 숫자 선택하기 (유치원생 취향 저격 큼직한 버튼)
+# 2. 버튼 클릭으로 숫자 선택하기
 st.markdown("<p class='block-label'>👉 궁금한 숫자를 콕! 눌러보세요:</p>", unsafe_allow_html=True)
 cols = st.columns(6)
 numbers_to_show = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
-# 세션 상태(Session State)를 이용해 현재 선택된 숫자 기억하기
+# 세션 상태(Session State) 초기화 (변수 이름: chosen_num)
 if 'chosen_num' not in st.session_state:
     st.session_state.chosen_num = 2
 
@@ -61,7 +61,4 @@ for idx, num in enumerate(numbers_to_show):
     with cols[idx % 6]:
         # 현재 선택된 숫자는 이모지를 붙여서 표시
         label = f"⭐ {num}" if st.session_state.chosen_num == num else f"{num}"
-        if st.button(label, key=f"btn_{num}", use_container_width=True):
-            st.session_state.chosen_num = num
-
-current_num = st.session_state.chosen
+        if st.button(label, key=f"
